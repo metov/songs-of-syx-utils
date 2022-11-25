@@ -1,0 +1,24 @@
+// Python Lark grammar for a Songs of Syx blueprint. Versions tried for:
+// - v0.62.24
+
+%import common.WS
+%ignore WS
+
+// dictionaries
+dict: key_value_pair+
+
+key_value_pair: _key ": " _value ","
+_key: string
+_value: string | integer | array | ("{" dict "}")
+
+// arrays
+array: "[" (_value ",")* _value ","? "]"
+
+// Primitives
+integer: /\d+/
+string: _string_quoted | _string_unquoted
+
+// We don't want escaped quotes in JSON, so these flanking quotes should be separate
+_string_quoted: "\"" /[^"]+/ "\""
+
+_string_unquoted: /[A-Z_]+/
